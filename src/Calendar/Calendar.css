@@ -1,0 +1,70 @@
+.calendar-container{
+    width: 100%;
+    max-width: 700px;
+    padding: 5vh;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+}
+
+.calendar-header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.month-and-year{
+    font-size: 25px;
+}
+
+.calendar{
+    margin-top: 3px;
+    border: 1px solid black;
+    display: flex;
+    flex-flow: wrap;
+    border-radius: 5px;
+}
+
+.weekday{
+    background-color: lightblue;
+}
+
+.Sun{
+    border-top-left-radius: 5px;
+}
+.Sat{
+    border-top-right-radius: 5px;
+}
+
+.day{
+    width: 14.28%;
+    display: flex;
+    justify-content: center;
+}
+
+.today{
+    border-radius: 3px;
+    background-color: lightpink;
+}
+
+.day-with-event{
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: hotpink;
+}
+
+.selected-day{
+    border-radius: 3px;
+    background-color: hotpink;
+}
+
+.event-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.events-title{
+    margin-top: 15px;
+    font-size: 25px;
+}
