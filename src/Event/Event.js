@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import './Event.css';
 
+/*
+    Event Component
+    Author: Ellinor Bakhuizen
+    Version: 2019-03-11
+ */
+
 class Event extends Component {
     constructor(props){
         super(props);

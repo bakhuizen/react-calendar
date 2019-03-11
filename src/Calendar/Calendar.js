@@ -14,7 +14,7 @@ let textEncoding = require('text-encoding');
 let TextDecoder = textEncoding.TextDecoder;
 
 const api_key = process.env.REACT_APP_API_KEY;
-const crypto_key = process.env.REACT_APP_CRYPTO_KEY;
+const crypto_passphrase = process.env.REACT_APP_CRYPTO_KEY;
 
 const BASE_URL = "https://projects.teamengine.com/calendar/events";
 const httpOptions = {
@@ -71,11 +71,9 @@ class Calendar extends Component {
             })
             .then( reader =>{
                 let str = new TextDecoder("utf-8").decode(reader.value);
-                let bytes  = CryptoJS.AES.decrypt(str, crypto_key);
+                let bytes  = CryptoJS.AES.decrypt(str, crypto_passphrase);
                 let text = bytes.toString(CryptoJS.enc.Utf8);
                 this.setState({eventsFromAPI: JSON.parse(text)});
-
-                //return JSON.parse(text);
             });
     }
 
@@ -110,10 +108,12 @@ class Calendar extends Component {
         let eventsOfSelectedDay = [];
         if(this.state.eventsFromAPI!=null){
             let event = this.state.eventsFromAPI.events;
-            for(let i = 0; i<this.state.eventsFromAPI.events.length; i++){
+            for(let i = 0; i<event.length; i++){
+                // Add all dates with events to daysWithEvents
                 if(!daysWithEvents.includes(event[i].date.substr(0, 10))){
                     daysWithEvents.push(event[i].date.substr(0, 10));
                 }
+                // Add all events of the selected day to eventsOfSelectedDay
                 if(event[i].date.substr(0, 10) === this.state.selectedMoment.format('YYYY[-]MM[-]DD')){
                     eventsOfSelectedDay.push(event[i]);
                 }
@@ -137,7 +137,7 @@ class Calendar extends Component {
             daysInMonth.push(<div key={"blank"+i} className="day blankDay">{""}</div>)
         }
 
-        // Add the Days of the selected month
+        // Add the days of the selected month
         for(let i=1; i<=this.getDaysInSelectedMonth(); i++){
             let className = "day";
 
@@ -149,11 +149,12 @@ class Calendar extends Component {
                 }
             }
 
+            // Add className selected-day to the selected day
             if(i == this.getSelectedDay()){
                 className += " selected-day";
             }
 
-            // Give days with events a special className
+            // Give days with events the className day-with-event
             let dayWithEvent = "";
             let day = this.state.selectedMoment.format('YYYY[-]MM[-]');
             if(i<10){
@@ -165,9 +166,15 @@ class Calendar extends Component {
                 dayWithEvent+="day-with-event";
             }
 
-            daysInMonth.push(<div key={i} className={className} onClick={(e)=>{this.onClickDay(e, i)}}>{i} <span className={dayWithEvent}></span></div>);
+            daysInMonth.push(
+              <div key={i} className={className} onClick={(e)=>{this.onClickDay(e, i)}}>
+                  {i}
+                  <span className={dayWithEvent}></span>
+              </div>
+            );
         }
 
+        // Create a Event component for each event of the selected day
         let events = eventsOfSelectedDay.map((event) => {
             return(
                 <Event key={event.database_id} event={event}/>
@@ -178,8 +185,6 @@ class Calendar extends Component {
         if(eventsOfSelectedDay.length === 0){
             noEvents = "You don't have any events on this day";
         }
-
-
 
 
         return (
